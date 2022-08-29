@@ -31,7 +31,10 @@ public class BrandServiceImp implements BrandService {
     @Override
     public ResponseEntity<BrandDto> save(BrandForm form, UriComponentsBuilder builder) {
         Brand brand = repository.save(form.toEntity());
-        URI uri = builder.path("/brand/{id}").buildAndExpand(brand.getId()).toUri();
+        URI uri = builder
+                .path("/brand/{id}")
+                .buildAndExpand(brand.getId())
+                .toUri();
         return ResponseEntity.created(uri).body(BrandDto.convert(brand));
     }
 
