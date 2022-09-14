@@ -8,6 +8,7 @@ Este projeto foi feito no intuito de praticar os conceitos de REST APIs. Trata-s
 - Spring Boot 
 - H2
 - Swagger
+- jUnit
 
 #### Documentação:
 
