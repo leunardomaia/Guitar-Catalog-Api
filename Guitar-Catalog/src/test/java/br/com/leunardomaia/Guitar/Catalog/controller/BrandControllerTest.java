@@ -6,14 +6,11 @@ import br.com.leunardomaia.Guitar.Catalog.controller.service.BrandService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,14 +20,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
 import java.net.URI;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BrandController.class)
 public class BrandControllerTest {
@@ -44,11 +39,10 @@ public class BrandControllerTest {
     ObjectMapper objectMapper;
 
 
-    // list
     @Test
     public void list_ShouldReturn200AndPage() throws Exception {
-        when(brandService.list(any(Pageable.class)))
-                .thenReturn(ResponseEntity.ok(page()));
+        when(brandService.list(any()))
+                .thenReturn(ResponseEntity.ok(Page.empty()));
 
         mockMvc.perform(get("/brand"))
                 .andExpect(status().isOk())
@@ -56,7 +50,7 @@ public class BrandControllerTest {
     }
 
     @Test
-    public void list_PageableShouldPassTheParams() throws Exception {
+    public void list_ShouldReturn200AndPageableShouldContainTheParams() throws Exception {
 
         mockMvc.perform(get("/brand")
                         .param("page", "5")
@@ -67,7 +61,7 @@ public class BrandControllerTest {
 
         ArgumentCaptor<Pageable> pageableArgumentCaptor = ArgumentCaptor.forClass(Pageable.class);
         verify(brandService).list(pageableArgumentCaptor.capture());
-        PageRequest pageable = (PageRequest) pageableArgumentCaptor.getValue();
+        Pageable pageable = pageableArgumentCaptor.getValue();
 
         assertEquals(5, pageable.getPageNumber());
         assertEquals(10, pageable.getPageSize());
@@ -77,17 +71,17 @@ public class BrandControllerTest {
     }
 
 
-    // save
     @Test
-    public void save_ShouldReturn201AndTheBrand() throws Exception {
+    public void save_ShouldReturn201AndTheBrandAndUri() throws Exception {
         when(brandService.save(any(BrandForm.class), any(UriComponentsBuilder.class)))
-                .thenReturn(ResponseEntity.created(new URI("")).body(dto()));
+                .thenReturn(ResponseEntity.created(new URI("/1")).body(createDto()));
 
         mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(form())))
+                        .content(objectMapper.writeValueAsString(createForm())))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("name").value(dto().getName()));
+                .andExpect(jsonPath("name").value(createDto().getName()))
+                .andExpect(header().string("location", "/1"));
     }
 
     @Test
@@ -101,7 +95,7 @@ public class BrandControllerTest {
     public void save_ShouldReturn400AndTheExceptionResponse_WithEmptyField() throws Exception {
         mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(emptyFieldForm())))
+                        .content(objectMapper.writeValueAsString(createEmptyFieldForm())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status_code").value(400));
     }
@@ -110,7 +104,7 @@ public class BrandControllerTest {
     public void save_ShouldReturn400AndTheExceptionResponse_WithoutBlankField() throws Exception {
         mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(blankFieldForm())))
+                        .content(objectMapper.writeValueAsString(createBlankFieldForm())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status_code").value(400));
     }
@@ -119,21 +113,20 @@ public class BrandControllerTest {
     public void save_ShouldReturn400AndTheExceptionResponse_WithoutNullField() throws Exception {
         mockMvc.perform(post("/brand")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(nullFieldForm())))
+                        .content(objectMapper.writeValueAsString(createNullFieldForm())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status_code").value(400));
     }
 
 
-    // getByID
     @Test
-    public void getById_ShouldReturnOkAndTheBrand() throws Exception {
+    public void getById_ShouldReturn200AndTheBrand() throws Exception {
         when(brandService.getById(1L))
-                .thenReturn(new ResponseEntity<>(dto(), HttpStatus.OK));
+                .thenReturn(new ResponseEntity<>(createDto(), HttpStatus.OK));
 
         mockMvc.perform(get("/brand/{id}", 1))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value(dto().getName()));
+                .andExpect(jsonPath("name").value(createDto().getName()));
     }
 
     @Test
@@ -147,17 +140,16 @@ public class BrandControllerTest {
     }
 
 
-    // update
     @Test
     public void update_ShouldReturn200AndTheBrand() throws Exception {
         when(brandService.update(eq(1L), any()))
-                .thenReturn(ResponseEntity.ok(dto()));
+                .thenReturn(ResponseEntity.ok(createDto()));
 
         mockMvc.perform(put("/brand/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(form())))
+                        .content(objectMapper.writeValueAsString(createForm())))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value(dto().getName()));
+                .andExpect(jsonPath("name").value(createDto().getName()));
     }
 
     @Test
@@ -167,7 +159,7 @@ public class BrandControllerTest {
 
         mockMvc.perform(put("/brand/{id}", 123)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(form())))
+                        .content(objectMapper.writeValueAsString(createForm())))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("status_code").value(404));
     }
@@ -183,7 +175,7 @@ public class BrandControllerTest {
     public void update_ShouldReturn400AndTheExceptionResponse_WithEmptyField() throws Exception {
         mockMvc.perform(put("/brand/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(emptyFieldForm())))
+                        .content(objectMapper.writeValueAsString(createEmptyFieldForm())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status_code").value(400));
     }
@@ -192,7 +184,7 @@ public class BrandControllerTest {
     public void update_ShouldReturn400AndTheExceptionResponse_WithBlankField() throws Exception {
         mockMvc.perform(put("/brand/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(blankFieldForm())))
+                        .content(objectMapper.writeValueAsString(createBlankFieldForm())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status_code").value(400));
     }
@@ -201,12 +193,12 @@ public class BrandControllerTest {
     public void update_ShouldReturn400AndTheExceptionResponse_WithNullField() throws Exception {
         mockMvc.perform(put("/brand/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(nullFieldForm())))
+                        .content(objectMapper.writeValueAsString(createNullFieldForm())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("status_code").value(400));
     }
 
-    // delete
+
     @Test
     public void delete_ShouldReturn200() throws Exception {
         when(brandService.delete(1L))
@@ -227,28 +219,24 @@ public class BrandControllerTest {
     }
 
 
-    // private methods
-    private BrandDto dto() {
-        return new BrandDto(1L, "Java");
+    private BrandDto createDto() {
+        return new BrandDto(1L, "Takamine");
     }
 
-    private Page<BrandDto> page() {
-        return new PageImpl<>(new ArrayList<>(), PageRequest.of(0, 10), 3);
+    private BrandForm createForm() {
+        BrandDto dto = createDto();
+        return new BrandForm(dto.getName());
     }
 
-    private BrandForm form() {
-        return new BrandForm("Java");
-    }
-
-    private BrandForm emptyFieldForm() {
+    private BrandForm createEmptyFieldForm() {
         return new BrandForm("");
     }
 
-    private BrandForm blankFieldForm() {
+    private BrandForm createBlankFieldForm() {
         return new BrandForm("  ");
     }
 
-    private BrandForm nullFieldForm() {
+    private BrandForm createNullFieldForm() {
         return new BrandForm(null);
     }
 }

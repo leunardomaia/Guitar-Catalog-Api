@@ -24,7 +24,7 @@ public class GuitarController {
 
     GuitarService service;
 
-    GuitarController(GuitarService service) {
+    public GuitarController(GuitarService service) {
         this.service = service;
     }
 

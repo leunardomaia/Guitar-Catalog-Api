@@ -4,6 +4,7 @@ import br.com.leunardomaia.Guitar.Catalog.controller.dto.BrandDto;
 import br.com.leunardomaia.Guitar.Catalog.controller.form.BrandForm;
 import br.com.leunardomaia.Guitar.Catalog.model.Brand;
 import br.com.leunardomaia.Guitar.Catalog.repository.BrandRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,7 +26,8 @@ public class BrandServiceImpTest {
     BrandRepository brandRepository;
     BrandService brandService;
 
-    public BrandServiceImpTest() {
+    @BeforeEach
+    void setup() {
         brandRepository = Mockito.mock(BrandRepository.class);
         brandService = new BrandServiceImp(brandRepository);
     }
