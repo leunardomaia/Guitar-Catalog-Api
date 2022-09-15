@@ -5,6 +5,7 @@ import br.com.leunardomaia.Guitar.Catalog.controller.form.GuitarForm;
 import br.com.leunardomaia.Guitar.Catalog.model.Guitar;
 import br.com.leunardomaia.Guitar.Catalog.repository.BrandRepository;
 import br.com.leunardomaia.Guitar.Catalog.repository.GuitarRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +16,12 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
+@AllArgsConstructor
 @Service
 public class GuitarServiceImp implements GuitarService {
 
-    GuitarRepository guitarRepository;
-    BrandRepository brandRepository;
-
-    GuitarServiceImp(GuitarRepository guitarRepository, BrandRepository brandRepository){
-        this.guitarRepository = guitarRepository;
-        this.brandRepository = brandRepository;
-    }
+    private GuitarRepository guitarRepository;
+    private BrandRepository brandRepository;
 
     @Override
     public ResponseEntity<Page<GuitarDto>> list(Pageable pageable) {

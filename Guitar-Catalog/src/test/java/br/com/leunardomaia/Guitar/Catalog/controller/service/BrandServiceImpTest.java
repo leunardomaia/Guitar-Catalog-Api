@@ -23,8 +23,8 @@ import static org.mockito.Mockito.*;
 
 public class BrandServiceImpTest {
 
-    BrandRepository brandRepository;
-    BrandService brandService;
+    private BrandRepository brandRepository;
+    private BrandService brandService;
 
     @BeforeEach
     void setup() {

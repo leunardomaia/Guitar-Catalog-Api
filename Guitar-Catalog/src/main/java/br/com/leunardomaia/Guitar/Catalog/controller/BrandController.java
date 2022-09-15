@@ -4,6 +4,7 @@ import br.com.leunardomaia.Guitar.Catalog.controller.dto.BrandDto;
 import br.com.leunardomaia.Guitar.Catalog.controller.form.BrandForm;
 import br.com.leunardomaia.Guitar.Catalog.controller.service.BrandService;
 import io.swagger.annotations.Api;
+import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -15,15 +16,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 @Api(tags = "Brand")
+@AllArgsConstructor
 @RestController
 @RequestMapping("/brand")
 public class BrandController {
 
-    BrandService service;
-
-    public BrandController(BrandService service) {
-        this.service = service;
-    }
+    private BrandService service;
 
     @GetMapping
     @Cacheable(value = "brands")

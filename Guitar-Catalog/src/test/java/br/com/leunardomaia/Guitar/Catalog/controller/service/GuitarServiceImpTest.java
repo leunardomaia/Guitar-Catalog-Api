@@ -1,39 +1,26 @@
 package br.com.leunardomaia.Guitar.Catalog.controller.service;
 
 import br.com.leunardomaia.Guitar.Catalog.controller.dto.GuitarDto;
-import br.com.leunardomaia.Guitar.Catalog.model.Guitar;
 import br.com.leunardomaia.Guitar.Catalog.repository.BrandRepository;
 import br.com.leunardomaia.Guitar.Catalog.repository.GuitarRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.Context;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GuitarServiceImpTest {
 
-    GuitarRepository guitarRepository;
-    BrandRepository brandRepository;
-    GuitarService guitarService;
+    private GuitarRepository guitarRepository;
+    private BrandRepository brandRepository;
+    private GuitarService guitarService;
 
     @BeforeEach
     void setup(){

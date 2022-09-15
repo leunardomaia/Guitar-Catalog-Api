@@ -5,6 +5,7 @@ import br.com.leunardomaia.Guitar.Catalog.controller.form.GuitarForm;
 import br.com.leunardomaia.Guitar.Catalog.controller.service.GuitarService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -18,15 +19,12 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 @Api(tags = "Guitar")
+@AllArgsConstructor
 @RestController
 @RequestMapping("/guitar")
 public class GuitarController {
 
-    GuitarService service;
-
-    public GuitarController(GuitarService service) {
-        this.service = service;
-    }
+    private GuitarService service;
 
     @GetMapping
     @Cacheable(value = "guitars")

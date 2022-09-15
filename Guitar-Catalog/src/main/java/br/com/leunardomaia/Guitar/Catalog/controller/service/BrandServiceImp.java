@@ -4,6 +4,7 @@ import br.com.leunardomaia.Guitar.Catalog.controller.dto.BrandDto;
 import br.com.leunardomaia.Guitar.Catalog.controller.form.BrandForm;
 import br.com.leunardomaia.Guitar.Catalog.model.Brand;
 import br.com.leunardomaia.Guitar.Catalog.repository.BrandRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -13,14 +14,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@AllArgsConstructor
 @Service
 public class BrandServiceImp implements BrandService {
 
-    BrandRepository repository;
-
-    public BrandServiceImp(BrandRepository repository){
-        this.repository = repository;
-    }
+    private BrandRepository repository;
 
     @Override
     public ResponseEntity<Page<BrandDto>> list(Pageable pageable) {
