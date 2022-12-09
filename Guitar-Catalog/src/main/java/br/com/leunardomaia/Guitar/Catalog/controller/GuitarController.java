@@ -40,7 +40,6 @@ public class GuitarController {
         return service.search(min_price, max_price, q);
     }
 
-    @Transactional
     @PostMapping
     @CacheEvict(value = "guitars", allEntries = true)
     public ResponseEntity<GuitarDto> save(@RequestBody @Valid GuitarForm form, UriComponentsBuilder builder) {
@@ -53,14 +52,12 @@ public class GuitarController {
         return service.getById(id);
     }
 
-    @Transactional
     @PutMapping("/{id}")
     @CacheEvict(value = "guitars", allEntries = true)
     public ResponseEntity<GuitarDto> update(@PathVariable Long id, @RequestBody @Valid GuitarForm form) {
         return service.update(id, form);
     }
 
-    @Transactional
     @DeleteMapping("/{id}")
     @CacheEvict(value = "guitars", allEntries = true)
     public ResponseEntity<?> delete(@PathVariable Long id) {

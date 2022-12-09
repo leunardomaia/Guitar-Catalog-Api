@@ -82,8 +82,7 @@ public class BrandServiceImpTest {
         when(brandRepository.getReferenceById(nonexistentId()))
                 .thenThrow(EntityNotFoundException.class);
 
-        assertThrows(EntityNotFoundException.class,
-                () -> brandService.getById(nonexistentId()));
+        assertThrows(EntityNotFoundException.class, () -> brandService.getById(nonexistentId()));
     }
 
 

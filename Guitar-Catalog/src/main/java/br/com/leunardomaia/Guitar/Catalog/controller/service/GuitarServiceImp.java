@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
@@ -35,7 +36,7 @@ public class GuitarServiceImp implements GuitarService {
        return ResponseEntity.ok(GuitarDto.convertList(guitars));
     }
 
-
+    @Transactional
     @Override
     public ResponseEntity<GuitarDto> save(GuitarForm form, UriComponentsBuilder builder) {
         Guitar guitar = guitarRepository.save(form.toEntity(brandRepository));
@@ -49,12 +50,14 @@ public class GuitarServiceImp implements GuitarService {
         return ResponseEntity.ok(GuitarDto.convert(guitar));
     }
 
+    @Transactional
     @Override
     public ResponseEntity<GuitarDto> update(Long id, GuitarForm form) {
         Guitar guitar = form.update(guitarRepository, id);
         return ResponseEntity.ok(GuitarDto.convert(guitar));
     }
 
+    @Transactional
     @Override
     public ResponseEntity<?> delete(Long id) {
         guitarRepository.deleteById(id);

@@ -29,7 +29,6 @@ public class BrandController {
         return service.list(pageable);
     }
 
-    @Transactional
     @PostMapping
     @CacheEvict(value = "brands", allEntries = true)
     public ResponseEntity<BrandDto> save(@RequestBody @Valid BrandForm form, UriComponentsBuilder builder) {
@@ -42,14 +41,12 @@ public class BrandController {
         return service.getById(id);
     }
 
-    @Transactional
     @PutMapping("/{id}")
     @CacheEvict(value = "brands", allEntries = true)
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody @Valid BrandForm form) {
         return service.update(id, form);
     }
 
-    @Transactional
     @DeleteMapping("/{id}")
     @CacheEvict(value = "brands", allEntries = true)
     public ResponseEntity<?> delete(@PathVariable Long id) {
